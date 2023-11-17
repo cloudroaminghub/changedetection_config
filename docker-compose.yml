@@ -1,0 +1,26 @@
+version: '2'
+services:
+    changedetection:
+      image: ghcr.io/dgtlmoon/changedetection.io:latest
+      container_name: changedetection
+      hostname: changedetection
+      volumes:
+        - ./data:/datastore
+
+      environment:
+      # Alternative Playwright URL, do not use "'s or 's!
+        - PLAYWRIGHT_DRIVER_URL=ws://playwright-chrome:3000/?stealth=1&--disable-web-security=true
+
+      # Comment out ports: when using behind a reverse proxy , enable networks: etc.
+      ports:
+        - 5000:5000
+      restart: unless-stopped
+
+    # Used for fetching pages via Playwright+Chrome where you need Javascript support.
+    playwright-chrome:
+       hostname: playwright-chrome
+       image: browserless/chrome:1-puppeteer-15.5.0-slim
+       restart: unless-stopped
+
+volumes:
+  changedetection-data:
